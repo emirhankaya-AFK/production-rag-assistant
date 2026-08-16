@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Upload PDFs and ask source-grounded questions." />
+    <title>Production RAG Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <span class="eyebrow">PostgreSQL · pgvector · FastAPI</span>
+          <h1>Ask your documents.<br /><span>Verify every answer.</span></h1>
+          <p>Upload a text-based PDF, ask a question, and inspect the exact pages used.</p>
+        </div>
+        <div class="status" id="status"><span></span> Connecting</div>
+      </header>
+
+      <section class="workspace">
+        <aside class="panel documents-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">Knowledge base</p>
+              <h2>Documents</h2>
+            </div>
+            <span class="count" id="document-count">0</span>
+          </div>
+
+          <label class="dropzone" id="dropzone">
+            <input id="file-input" type="file" accept="application/pdf,.pdf" />
+            <span class="upload-icon">↑</span>
+            <strong>Choose a PDF</strong>
+            <small>Text-based PDF · max 15 MB</small>
+          </label>
+          <div class="progress hidden" id="upload-progress">Indexing document…</div>
+          <div class="document-list" id="document-list"></div>
+        </aside>
+
+        <section class="panel chat-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">Grounded answers</p>
+              <h2>Document chat</h2>
+            </div>
+            <span class="provider" id="provider">LOCAL</span>
+          </div>
+
+          <div class="empty-answer" id="empty-answer">
+            <div class="mark">R</div>
+            <h3>Start with a precise question</h3>
+            <p>The assistant will retrieve relevant passages and cite filename and page.</p>
+          </div>
+
+          <article class="answer hidden" id="answer-card">
+            <p class="answer-label">Answer</p>
+            <div id="answer-text"></div>
+            <div class="citations" id="citations"></div>
+          </article>
+
+          <form class="ask-form" id="ask-form">
+            <textarea
+              id="question"
+              rows="3"
+              minlength="3"
+              maxlength="2000"
+              placeholder="What does the document say about…?"
+              required
+            ></textarea>
+            <button type="submit" id="ask-button">Ask documents <span>→</span></button>
+          </form>
+          <p class="message" id="message" role="status"></p>
+        </section>
+      </section>
+    </main>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
+
