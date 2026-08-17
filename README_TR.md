@@ -64,9 +64,10 @@ pytest -q
 
 ## Mevcut sınırlar ve sonraki adımlar
 
+Değerlendirme checklist'i: top-k sonuçlarda beklenen sayfanın bulunması, desteklenmeyen cevapların reddi, temsili PDF/soru regresyon seti ve upload/retrieval/answer latency ile citation coverage metriklerinin izlenmesi.
+
 - Taranmış PDF dosyaları için OCR eklenecek.
 - Alembic migration sistemi ve arka plan iş kuyruğu eklenecek.
 - JWT kimlik doğrulama ve çoklu çalışma alanı desteği eklenecek.
 - Hibrit arama, reranker ve RAG değerlendirme veri seti hazırlanacak.
 - Uygulama yönetilen PostgreSQL ve container hizmetine dağıtılacak.
-
