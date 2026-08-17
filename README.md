@@ -32,6 +32,13 @@ Browser UI
                                                grounded answer + citations
 ```
 
+## Evaluation checklist
+
+- Retrieval: verify that the expected page appears in the top-k results.
+- Grounding: reject answers without supporting excerpts.
+- Regression set: keep representative PDFs and questions under tests/evals.
+- Operations: track upload latency, retrieval latency, answer latency and citation coverage.
+
 ## Quick start with Docker
 
 Requirements: Docker Desktop with Compose.
@@ -127,4 +134,3 @@ CI runs both commands for every pull request and push to `main`.
 3. Add OCR, hybrid full-text/vector search, reranking, and evaluation datasets.
 4. Add rate limiting, structured observability, and cloud object storage.
 5. Deploy to a managed PostgreSQL/pgvector service and a container platform.
-
