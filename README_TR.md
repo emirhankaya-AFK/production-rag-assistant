@@ -1,6 +1,6 @@
 # Production RAG Assistant
 
-[English](README.md) | [Türkçe](README_TR.md)
+[English](README.md) | [Türkçe](README_TR.md) | [Deutsch](README_DE.md)
 
 FastAPI, PostgreSQL, pgvector, Docker ve basit bir web arayüzüyle geliştirilmiş; PDF dosyalarına kaynak göstererek soru sorulmasını sağlayan RAG uygulamasıdır. API anahtarı gerektirmeyen yerel demo modu ve OpenAI destekli gerçek kullanım modu bulunur.
 

@@ -1,6 +1,6 @@
 # Production RAG Assistant
 
-[English](README.md) | [Türkçe](README_TR.md)
+[English](README.md) | [Türkçe](README_TR.md) | [Deutsch](README_DE.md)
 
 A source-grounded PDF question-answering application built with FastAPI, PostgreSQL, pgvector, Docker, and a small responsive web interface. It supports a zero-key local demo mode and an OpenAI-backed mode for production-quality embeddings and answers.
 
