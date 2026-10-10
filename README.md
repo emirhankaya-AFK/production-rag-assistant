@@ -1,65 +1,51 @@
 # Production RAG Assistant
 
-[English](README.md) | [Türkçe](README_TR.md) | [Deutsch](README_DE.md)
+[English](#english) | [Türkçe](#türkçe) | [Deutsch](#deutsch)
 
-A source-grounded PDF question-answering application built with FastAPI, PostgreSQL, pgvector, Docker, and a small responsive web interface. It supports a zero-key local demo mode and an OpenAI-backed mode for production-quality embeddings and answers.
+## English
 
-## What it demonstrates
+### Purpose
+A source‑grounded PDF question‑answering application built with FastAPI, PostgreSQL, pgvector, Docker, and a small responsive web interface. It supports a zero‑key local demo mode and an OpenAI‑backed mode for production‑quality embeddings and answers.
 
-- Async REST API design with FastAPI and SQLAlchemy
-- PostgreSQL persistence and pgvector cosine similarity search
-- Validated PDF upload, page-aware chunking, and batched embeddings
-- Answers with document, page, relevance score, and excerpt citations
-- Provider abstraction: deterministic local mode or OpenAI API
-- Docker Compose startup with database health checks
-- Error handling, upload limits, typed schemas, and safe filename handling
-- Unit/API tests, Ruff checks, and GitHub Actions CI
-- English and Turkish documentation
+### Verified Features
+- Async REST API design with FastAPI and SQLAlchemy  
+- PostgreSQL persistence with pgvector cosine similarity search  
+- Validated PDF upload, page‑aware chunking, and batched embeddings  
+- Answers that include document, page, relevance score, and excerpt citations  
+- Provider abstraction: deterministic local mode (no API key) or OpenAI API  
+- Docker Compose startup with database health checks  
+- Error handling, upload limits, typed schemas, and safe filename handling  
+- Unit and API tests, Ruff linting, and GitHub Actions CI  
+- English and Turkish documentation  
 
-## Architecture
+### Stack
+- **Language**: Python  
+- **Web framework**: FastAPI (with Uvicorn)  
+- **ORM**: SQLAlchemy  
+- **Database**: PostgreSQL + pgvector extension  
+- **Containerization**: Docker & Docker Compose  
+- **Code quality**: Ruff  
+- **Testing**: pytest  
+- **CI**: GitHub Actions  
 
-```text
-Browser UI
-   │
-   ├── POST /api/v1/documents ──> PDF parser ──> chunker ──> embeddings
-   │                                                     │
-   │                                                     ▼
-   │                                              PostgreSQL + pgvector
-   │                                                     ▲
-   └── POST /api/v1/chat/ask ──> question embedding ──> cosine search
-                                                         │
-                                                         ▼
-                                               grounded answer + citations
-```
+### Setup & Usage (Docker)
+1. Copy the example environment file:  
+   ```bash
+   cp .env.example .env
+   ```
+2. Build and start the services:  
+   ```bash
+   docker compose up --build
+   ```
+3. Open the application:  
+   - UI: `http://localhost:8000`  
+   - Swagger UI: `http://localhost:8000/docs`  
+   - Health endpoint: `http://localhost:8000/health`  
 
-## Evaluation checklist
+The default `LLM_PROVIDER=local` mode works without an API key and uses deterministic hashed embeddings for easy local testing.
 
-- Retrieval: verify that the expected page appears in the top-k results.
-- Grounding: reject answers without supporting excerpts.
-- Regression set: keep representative PDFs and questions under tests/evals.
-- Operations: track upload latency, retrieval latency, answer latency and citation coverage.
-
-## Quick start with Docker
-
-Requirements: Docker Desktop with Compose.
-
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-Open:
-
-- Application: `http://localhost:8000`
-- Swagger UI: `http://localhost:8000/docs`
-- Health endpoint: `http://localhost:8000/health`
-
-The default `LLM_PROVIDER=local` mode works without an API key. It uses deterministic hashed embeddings and an extractive answer generator, making the complete upload/retrieval/citation pipeline easy to test locally.
-
-## OpenAI mode
-
-Set these values in `.env`:
-
+### OpenAI Mode
+Set the following in `.env`:
 ```env
 LLM_PROVIDER=openai
 OPENAI_API_KEY=your_key
@@ -67,70 +53,41 @@ OPENAI_CHAT_MODEL=gpt-5-mini
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 EMBEDDING_DIMENSIONS=1536
 ```
+If you change embedding models or dimensions after indexing, recreate the database volume and re‑index documents to keep vector compatibility.
 
-If you change embedding models or dimensions after indexing documents, recreate the database volume and re-index the documents so stored vectors remain compatible.
-
-## API
-
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `GET` | `/health` | Service health |
-| `POST` | `/api/v1/documents` | Upload and index a PDF |
-| `GET` | `/api/v1/documents` | List indexed documents |
-| `DELETE` | `/api/v1/documents/{id}` | Delete a document and its chunks |
-| `POST` | `/api/v1/chat/ask` | Ask a grounded question |
-
-Example question request:
-
-```json
-{
-  "question": "What are the main deployment risks?",
-  "document_ids": null,
-  "top_k": 5
-}
-```
-
-## Local development
-
-Start PostgreSQL:
-
+### Local Development (without Docker)
 ```bash
+# Start PostgreSQL only
 docker compose up -d db
-```
 
-Create a virtual environment and run the API:
-
-```bash
+# Python environment
 python -m venv .venv
 # Windows: .venv\Scripts\activate
 # Linux/macOS: source .venv/bin/activate
 pip install -e ".[dev]"
-copy .env.example .env
+cp .env.example .env
 uvicorn app.main:app --reload
 ```
+When running outside Docker, change the database host in `.env` from `db` to `localhost` and use port `5433`.
 
-When the API runs outside Docker, change the database hostname in `.env` from `db` to `localhost` and use port `5433`.
-
-## Quality checks
-
+### Testing
 ```bash
 ruff check .
 pytest -q
 ```
+Both commands are run by GitHub Actions on every pull request and push to `main`.
 
-CI runs both commands for every pull request and push to `main`.
+### Limitations
+- Scanned PDFs require OCR and are rejected with a clear validation error.  
+- Authentication and tenant isolation are not implemented in this vertical slice.  
+- Database tables are created at application startup; Alembic migrations are planned for future hosted deployment.  
+- The local mode is intended for pipeline testing, not for high‑quality semantic retrieval.  
 
-## Current limitations
+### License
+See the [LICENSE](LICENSE) file for details.
 
-- Scanned PDFs require OCR and are rejected with a clear validation error.
-- Authentication and tenant isolation are not part of this first vertical slice.
-- Database tables are bootstrapped at application startup; Alembic migrations are planned before hosted deployment.
-- Local mode is for pipeline testing, not high-quality semantic retrieval.
+## Türkçe
+See [README_TR.md](README_TR.md) for the Turkish version.
 
-## Production roadmap
-
-1. Add Alembic migrations and background ingestion jobs.
-2. Add JWT authentication, workspaces, and document-level authorization.
-3. Add OCR, hybrid full-text/vector search, reranking, and evaluation datasets.
-4. Add rate limiting, structured observability, and cloud object storage.
-5. Deploy to a managed PostgreSQL/pgvector service and a container platform.
+## Deutsch
+See [README_DE.md](README_DE.md) for the German version.
